@@ -1,8 +1,9 @@
 import React,{useEffect,useState} from 'react';
 import {View, StyleSheet,SafeAreaView,ScrollView,Text,useWindowDimensions,TouchableOpacity} from 'react-native';
-import { Avatar,TextInput,Surface,Searchbar,Chip,Card,ActivityIndicator, MD2Colors,Button,Badge } from 'react-native-paper';
+import { Avatar,TextInput,Surface,Searchbar,Chip,Card,ActivityIndicator, MD2Colors,Button,Badge,Appbar } from 'react-native-paper';
 import RenderHtml from 'react-native-render-html';
 import Carousel from 'react-native-snap-carousel';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const Product = ({route,navigation}) => {
     const { width } = useWindowDimensions();
     const {pid}=route.params;
@@ -42,6 +43,7 @@ const Product = ({route,navigation}) => {
     .then(response => response.json())
     .then(result =>{ 
         setproduct(result);
+        console.log(result)
         setload(false);
         if(result.categories.length){
             setcategory(result.categories[0].slug);
@@ -60,6 +62,15 @@ _renderItem = ({item, index}) => {
             <TouchableOpacity onPress={()=>navigation.navigate("Product",{pid:item.id})}><Text style={{color:'black',fontSize:18,fontWeight:600}}>{item.name}</Text></TouchableOpacity>
             <Text  style={{color:'black', marginLeft:10}}>{item.price.formatted_with_symbol}</Text>
             </View>
+            
+        </Card>
+    );
+}
+_renderItem1 = ({item, index}) => {
+    return (
+        <Card style={{padding:5}}>
+            {  <Card.Cover  source={{uri:item.url}} style={{width:350,maxHeight:200,objectFit:'contain'}}/>}
+            
             
         </Card>
     );
@@ -88,11 +99,28 @@ fetch("https://api.chec.io/v1/products?category_slug="+cat, requestOptions)
 }
     
 }
+const addTowishlist=(id)=>{
+
+}
     return (
         <SafeAreaView>
             <ScrollView>
                <View style={{flex:1,display:'flex',flexDirection:'column',width:width}}>
-               {load && <ActivityIndicator animating={true} color={MD2Colors.red800} />}
+               <Appbar.Header>
+    <Appbar.BackAction onPress={() => {}} />
+    <Appbar.Content title={ product ? product.name:'Product'} />
+    <Appbar.Action icon="heart" onPress={() => {}} />
+    <Appbar.Action icon="cart" onPress={() => {}} />
+  </Appbar.Header>
+                <View style={{zIndex:988,position:'absolute',top:140,left:width-40}}>
+                <TouchableOpacity onPress={()=>addTowishlist(product.id)}>
+                <Text style={{color:'black',}}><Icon name="heart" size={30} color="black" /></Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>addTowishlist(product.id)}>
+                <Text style={{color:'black',}}><Icon name="shopping-cart" size={30} color="black" /></Text>
+                </TouchableOpacity>
+                </View>
+               {load && <ActivityIndicator style={{position:'absolute',top:200,left:150,zIndex:575,backgroundColor:'white',width:100,height:100}} animating={true} color={MD2Colors.red800} />}
                  {Object.keys(product).length>0 && <Card>
                     <Card.Content>
                 <Card.Cover source={{uri:product.image.url}} />
@@ -116,6 +144,16 @@ fetch("https://api.chec.io/v1/products?category_slug="+cat, requestOptions)
                 <View>
                 
                 </View>
+                {typeof product.assets!='undefined' && <View style={{backgroundColor:'white',marginTop:10}}>
+                <Text style={{color:'black',fontSize:22,textAlign:'center',fontWeight:600}}>Product Gallery</Text>
+                <Carousel
+            ref={(c) => { this._carousel = c; }}
+            data={product.assets}
+            renderItem={_renderItem1}
+            sliderWidth="400"
+            itemWidth="336"
+            />
+                </View> }
                 {relProducts.length>0 && <View style={{backgroundColor:'white',marginTop:50}}>
                 <Text style={{color:'black',fontSize:22,textAlign:'center',fontWeight:600}}>Related Products</Text>
            <Carousel

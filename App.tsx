@@ -25,16 +25,23 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Main from './screens/Main';
 import Product from './screens/Product';
+import Newproducts from './screens/Newproducts';
+import Carts from './screens/Carts';
+
+
 function App(): JSX.Element {
   const Stack = createNativeStackNavigator();
   
   return (
+    
     <GestureHandlerRootView style={{ flex: 1 }}>
  <NavigationContainer independent={true}>
           <Stack.Navigator>
              <Stack.Screen name="Main" options={{headerShown: false}} component={Main} />
              <Stack.Screen name="Home" options={{headerShown: false}} component={HomeScreen} />
-             <Stack.Screen name="Product" options={{headerShown: false}} component={Product} />
+             <Stack.Screen name="Product"  component={Product} />
+             <Stack.Screen name="Cart"  component={Carts} />
+             <Stack.Screen name="Newproducts" options={{headerShown: false}} component={Newproducts} />
           </Stack.Navigator>
     </NavigationContainer>
     </GestureHandlerRootView>
